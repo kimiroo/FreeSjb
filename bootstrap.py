@@ -82,7 +82,7 @@ import wget
 # disable windows update
 run("sc.exe", "config wuauserv start=disabled")
 run("sc.exe", "stop wuauserv")
-download("https://github.com/kimiroo/sjb/script/dwu.ps1", "dsu.ps1")
+download("https://raw.githubusercontent.com/kimiroo/sjb/main/script/dwu.ps1", "dsu.ps1")
 run("powershell", "-noprofile -executionpolicy bypass -file dwu.ps1")
 
 # kill adobe AdobeARM.exe
@@ -95,7 +95,7 @@ print("Installing Firefox now to save time...")
 run(buildUri('firefox.exe'), '')
 
 # download firefox pref
-download("https://github.com/kimiroo/sjb/data/prefs.js", "prefs.js")
+download("https://raw.githubusercontent.com/kimiroo/sjb/main/data/prefs.js", "prefs.js")
 # apply firefox pref
 run('taskkill', '/f /im firefox.exe /t')
 time.sleep(2)
