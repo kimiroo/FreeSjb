@@ -9,6 +9,15 @@ import webbrowser
 import zipfile
 import time
 from shutil import copyfile
+import threading
+
+# app meta data
+_appVer = '0.03 beta'
+
+# development to do list:
+# - move google drive link to 'firefox setup' section to let user setup account while installing other apps
+# - thread multitasking
+# - useful apps download link
 
 # pip module install func.
 def install(package):
@@ -18,6 +27,8 @@ def install(package):
 def download(_url, _filename):
     _fileuri = buildUri(_filename)
     wget.download(_url, out=_fileuri)
+    _dFiles.append(_filename) # adds name of downloaded file to the list (for cleanup)
+    print('') # wget ooutput line break
 
 # run app
 def run(_uri, _arg):
@@ -69,19 +80,57 @@ def getModule(_name):
         else:
             break # break loop if successful
 
-#copy2 (via cmd)
-def copy2(_src, _des):
-    run("copy", "/y \"" + _src + "\" \"" + _des + "\"")
-    pass
+# firefox install & configure thread
+def instFirefox():
+    # install firefox
+    #run(buildUri('firefox.exe'), '')
+
+    # apply firefox pref
+    #run('taskkill', '/f /im firefox.exe /t')
+    time.sleep(2)
+    ff_topDir = os.path.join(_home,'AppData\Roaming\Mozilla\Firefox\Profiles')
+    ff_profile = [f for f in listdir(ff_topDir) if not isfile(join(ff_topDir, f))] # only add directory to the candidate list
+    ff_profdir = []
+
+    for i in ff_profile: # leave only directory(ies) that has prefs.js
+        if os.path.isfile(os.path.join(ff_topDir,i,'prefs.js')):
+            ff_profdir.append(os.path.join(ff_topDir,i))
+
+    for i in ff_profdir: # apply prefs.js to all directories
+        try:
+            #copyfile(os.path.join(_cd,'prefs.js'), os.path.join(i,'prefs.js'))
+            pass
+        except Exception as e:
+            print(e.message)
+            pass
+        else:
+            print("Firefox installation & configuration complete.")
+            pass
+
+# cleanup
+def cleanup():
+    # delete downloaded files
+    for i in _dFiles:
+        try:
+            os.remove(os.path.join(_cd,i))
+        except:
+            print('Error occured while deleting file \'' + i + '\'.')
 
 # init
+print('Welcome to Sajibang Configurator! (v.' + _appVer + ')\n\n')
+print('Initializing...', end=' ')
 _cd = os.getcwd()
 _home = os.getenv('USERPROFILE')
+_dFiles = []
 createDir(os.path.join(_home,"Desktop","work"))
+print("Done.\n")
 
 # try importing wget
+print('Preparing required modules...')
+print('Downloading wget...')
 getModule("wget")
 import wget
+print('Module preparation complete.\n')
 
 # try importing winshell -> winshell pip problem. not creating shortcuts due to this
 #getModule("pypiwin32")
@@ -91,76 +140,66 @@ import wget
 #import winshell
 
 # disable windows update
-print("Disabling Windows Updates...")
+print('Downloading Windows Update disable script...')
+download("https://raw.githubusercontent.com/kimiroo/sjb/main/script/dwu.ps1", "dsu.ps1")
+print('Disabling Windows update...', end=' ')
 run("sc.exe", "config wuauserv start=disabled")
 run("sc.exe", "stop wuauserv")
-download("https://raw.githubusercontent.com/kimiroo/sjb/main/script/dwu.ps1", "dsu.ps1")
-print(_cd + "\dwu.ps1")
 run("powershell", "-noprofile -executionpolicy bypass -file " + os.path.join(_cd, "dsu.ps1"))
+print("Done.\n")
 
 # kill adobe AdobeARM.exe
+print('Killing Adobe services...')
+run("sc.exe", "config AdobeARMService start=disabled")
+run("sc.exe", "stop AdobeARMService")
 run('taskkill', '/f /im AdobeARM.exe /t')
+print('Done.\n')
 
 # download apps
+print('======== Downloading Apps ========')
 print("Downloading Firefox...")
 download("https://download.mozilla.org/?product=firefox-stub&os=win&lang=ko", "firefox.exe")
+download("https://raw.githubusercontent.com/kimiroo/sjb/main/data/prefs.js", "prefs.js") # download firefox pref
 print("Installing Firefox now to save time...")
-run(buildUri('firefox.exe'), '')
+thInstFf = threading.Thread(instFirefox())
+thInstFf.start()
 
-# download firefox pref
-download("https://raw.githubusercontent.com/kimiroo/sjb/main/data/prefs.js", "prefs.js")
-# apply firefox pref
-run('taskkill', '/f /im firefox.exe /t')
-time.sleep(2)
-ff_topDir = os.path.join(_home,'AppData\Roaming\Mozilla\Firefox\Profiles')
-ff_profile = [f for f in listdir(ff_topDir) if not isfile(join(ff_topDir, f))] # only add directory to the candidate list
-ff_profdir = []
-
-for i in ff_profile: # leave only directory(ies) that has prefs.js
-    if os.path.isfile(os.path.join(ff_topDir,i,'prefs.js')):
-        ff_profdir.append(os.path.join(ff_topDir,i))
-
-for i in ff_profdir: # apply prefs.js to all directories
-    try:
-        copyfile(os.path.join(_cd,'prefs.js'), os.path.join(i,'prefs.js'))
-    except Exception as e:
-        print(e.message)
-        pass
-    else:
-        print("success")
-        pass
-
-print("\nDownloading VS Code...")
+print("Downloading VS Code...")
 download("https://code.visualstudio.com/sha/download?build=stable&os=win32-x64", "vscode.exe")
 
-print("\nDownloading PuTTY...")
+print("Downloading PuTTY...")
 download("https://the.earth.li/~sgtatham/putty/latest/w64/putty.exe", "putty.exe")
 
-print("\nDownloading FileZilla...")
+print("Downloading FileZilla...")
 download("https://download.filezilla-project.org/client/FileZilla_3.56.2_win64.zip", "filezilla.zip")
 
-print("\nDownloading Git...")
+print("Downloading Git...")
 download('https://github.com/git-for-windows/git/releases/download/v2.33.1.windows.1/Git-2.33.1-64-bit.exe', 'git.exe')
 
-print("\nDownloading Bandizip...")
+print("Downloading Bandizip...")
 download('https://www.bandisoft.com/bandizip/dl.php?web', 'bandizip.exe')
 
-print("\n====Installing Apps====")
+print('\n======== Installing Apps ========')
 
-print("Installing Bandizip...")
+print("Installing Bandizip...", end=' ')
 run(buildUri('bandizip.exe'), '/S')
+print('Done.')
 
-print("Installing Git...")
+print("Installing Git...", end=' ')
 run(buildUri('git.exe'), '/VERYSILENT /NORESTART')
+print('Done.')
 
-print("Installing VS Code...")
+print("Installing VS Code...", end=' ')
 run(buildUri('vscode.exe'), '/VERYSILENT /NORESTART /MERGETASKS=!runcode')
+print('Done.')
 
-print("Copying PuTTY...")
+print("Copying PuTTY...", end=' ')
 copyfile(buildUri2('putty.exe'), os.path.join(_home,"Desktop","work","putty.exe"))
+print('Done.')
 
-print("Extracting FileZilla...")
+print("Extracting FileZilla...", end=' ')
 unzip('filezilla.zip', os.path.join(_home,"Desktop","work"))
+print('Done.')
 
 # Code extension
 # GitHub Pull Requests and Issues - github.vscode-pull-request-github
@@ -168,14 +207,21 @@ unzip('filezilla.zip', os.path.join(_home,"Desktop","work"))
 # C/C++ - ms-vscode.cpptools
 
 # Configure apps
-print("==== Configuring Apps ====")
+print("Configuring Apps...", end=' ')
 run2('cmd /c "C:\Program Files\Microsoft VS Code\\bin\code.cmd" --install-extension ms-python.python')
 run2('cmd /c "C:\Program Files\Microsoft VS Code\\bin\code.cmd" --install-extension ms-vscode.cpptools')
 run('cmd', '/c reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v HideFileExt /t REG_DWORD /d 0 /f') # show file extensions
+print('Done.\n')
+
+# cleanup
+print('Cleaning up...', end=' ')
+cleanup()
+print('Done.\n')
 
 print("==== Finished ====")
 
-print("Opening Google Drive...")
+print("\nOpening Google Drive...")
 openweb("https://drive.google.com/drive/folders/1myzqcvLCAUQzhABE-bE8rDc_yYhcmTo_?usp=sharing")
 
-input("Press Enter to exit...")
+input("\nPress Enter to exit...")
+exit()
