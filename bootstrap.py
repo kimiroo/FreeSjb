@@ -21,9 +21,14 @@ def download(_url, _filename):
 
 # run app
 def run(_uri, _arg):
-    _cmd = _uri + " " + _arg
+    _cmd = _arg.split(" ")
+    _cmd.insert(0,_uri)
     print(_cmd)
-    subprocess.run(shlex.split(_cmd))
+    subprocess.run(_cmd, bufsize=1)
+def run2(_cmd):
+    _arg = shlex.split(_cmd)
+    print(_arg)
+    subprocess.run(_arg, bufsize=1)
 
 # file uri builder
 def buildUri(_filename):
@@ -31,6 +36,9 @@ def buildUri(_filename):
     # disabled because of bug
     #return _fileuri
     return _filename
+def buildUri2(_filename):
+    _fileuri = os.path.join(_cd,_filename)
+    return _fileuri
 
 # open url in browser
 def openweb(_url):
@@ -51,7 +59,6 @@ def createDir(directory):
         print ('Error: Creating directory. ' +  directory)
 
 # get module
-# try importing wget
 def getModule(_name):
     for i in range(3): # repeat until 3rd try
         try:
@@ -62,6 +69,10 @@ def getModule(_name):
         else:
             break # break loop if successful
 
+#copy2 (via cmd)
+def copy2(_src, _des):
+    run("copy", "/y \"" + _src + "\" \"" + _des + "\"")
+    pass
 
 # init
 _cd = os.getcwd()
@@ -80,13 +91,15 @@ import wget
 #import winshell
 
 # disable windows update
+print("Disabling Windows Updates...")
 run("sc.exe", "config wuauserv start=disabled")
 run("sc.exe", "stop wuauserv")
 download("https://raw.githubusercontent.com/kimiroo/sjb/main/script/dwu.ps1", "dsu.ps1")
-run("powershell", "-noprofile -executionpolicy bypass -file dwu.ps1")
+print(_cd + "\dwu.ps1")
+run("powershell", "-noprofile -executionpolicy bypass -file " + os.path.join(_cd, "dsu.ps1"))
 
 # kill adobe AdobeARM.exe
-subprocess.run('taskkill', '/f /im AdobeARM.exe /t')
+run('taskkill', '/f /im AdobeARM.exe /t')
 
 # download apps
 print("Downloading Firefox...")
@@ -100,14 +113,14 @@ download("https://raw.githubusercontent.com/kimiroo/sjb/main/data/prefs.js", "pr
 run('taskkill', '/f /im firefox.exe /t')
 time.sleep(2)
 ff_topDir = os.path.join(_home,'AppData\Roaming\Mozilla\Firefox\Profiles')
-ff_profile = [f for f in listdir(ff_topDir) if not isfile(join(ff_topDir, f))]
+ff_profile = [f for f in listdir(ff_topDir) if not isfile(join(ff_topDir, f))] # only add directory to the candidate list
 ff_profdir = []
 
-for i in ff_profile:
+for i in ff_profile: # leave only directory(ies) that has prefs.js
     if os.path.isfile(os.path.join(ff_topDir,i,'prefs.js')):
         ff_profdir.append(os.path.join(ff_topDir,i))
 
-for i in ff_profdir:
+for i in ff_profdir: # apply prefs.js to all directories
     try:
         copyfile(os.path.join(_cd,'prefs.js'), os.path.join(i,'prefs.js'))
     except Exception as e:
@@ -124,7 +137,7 @@ print("\nDownloading PuTTY...")
 download("https://the.earth.li/~sgtatham/putty/latest/w64/putty.exe", "putty.exe")
 
 print("\nDownloading FileZilla...")
-download("https://dl2.cdn.filezilla-project.org/client/FileZilla_3.56.2_win64.zip?h=ojzFFbjfGn7WXTNB1lkeaQ&x=1636901311", "filezilla.zip")
+download("https://download.filezilla-project.org/client/FileZilla_3.56.2_win64.zip", "filezilla.zip")
 
 print("\nDownloading Git...")
 download('https://github.com/git-for-windows/git/releases/download/v2.33.1.windows.1/Git-2.33.1-64-bit.exe', 'git.exe')
@@ -144,7 +157,7 @@ print("Installing VS Code...")
 run(buildUri('vscode.exe'), '/VERYSILENT /NORESTART /MERGETASKS=!runcode')
 
 print("Copying PuTTY...")
-copyfile(buildUri('putty.exe'), os.path.join(_home,"Desktop","work"))
+copyfile(buildUri2('putty.exe'), os.path.join(_home,"Desktop","work","putty.exe"))
 
 print("Extracting FileZilla...")
 unzip('filezilla.zip', os.path.join(_home,"Desktop","work"))
@@ -154,11 +167,15 @@ unzip('filezilla.zip', os.path.join(_home,"Desktop","work"))
 # Python - ms-python.python
 # C/C++ - ms-vscode.cpptools
 
+# Configure apps
 print("==== Configuring Apps ====")
-subprocess.run('cmd', "code --install-extension ms-python.python")
-subprocess.run(['cmd', 'code --install-extension ms-vscode.cpptools'])
-subprocess.run(['powershell', 'reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v HideFileExt /t REG_DWORD /d 0 /f'])
+run2('cmd /c "C:\Program Files\Microsoft VS Code\\bin\code.cmd" --install-extension ms-python.python')
+run2('cmd /c "C:\Program Files\Microsoft VS Code\\bin\code.cmd" --install-extension ms-vscode.cpptools')
+run('cmd', '/c reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v HideFileExt /t REG_DWORD /d 0 /f') # show file extensions
 
 print("==== Finished ====")
+
 print("Opening Google Drive...")
 openweb("https://drive.google.com/drive/folders/1myzqcvLCAUQzhABE-bE8rDc_yYhcmTo_?usp=sharing")
+
+input("Press Enter to exit...")
