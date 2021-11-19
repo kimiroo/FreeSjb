@@ -83,10 +83,10 @@ def getModule(_name):
 # firefox install & configure thread
 def instFirefox():
     # install firefox
-    #run(buildUri('firefox.exe'), '')
+    run(buildUri('firefox.exe'), '')
 
     # apply firefox pref
-    #run('taskkill', '/f /im firefox.exe /t')
+    run('taskkill', '/f /im firefox.exe /t')
     time.sleep(2)
     ff_topDir = os.path.join(_home,'AppData\Roaming\Mozilla\Firefox\Profiles')
     ff_profile = [f for f in listdir(ff_topDir) if not isfile(join(ff_topDir, f))] # only add directory to the candidate list
@@ -98,7 +98,7 @@ def instFirefox():
 
     for i in ff_profdir: # apply prefs.js to all directories
         try:
-            #copyfile(os.path.join(_cd,'prefs.js'), os.path.join(i,'prefs.js'))
+            copyfile(os.path.join(_cd,'prefs.js'), os.path.join(i,'prefs.js'))
             pass
         except Exception as e:
             print(e.message)
