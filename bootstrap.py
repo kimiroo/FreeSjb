@@ -34,16 +34,16 @@ def download(_url, _filename):
 def run(_uri, _arg):
     _cmd = _arg.split(" ")
     _cmd.insert(0,_uri)
-    #subprocess.run(_cmd, bufsize=1, 
-    #stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT) # redirect the output to null 
+    subprocess.run(_cmd, bufsize=1, 
+    stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT) # redirect the output to null 
     #debug
-    subprocess.run(_cmd, bufsize=1)
+    #subprocess.run(_cmd, bufsize=1)
 def run2(_cmd):
     _arg = shlex.split(_cmd)
-    #subprocess.run(_arg, bufsize=1, 
-    #stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT) # redirect the output to null
+    subprocess.run(_arg, bufsize=1, 
+    stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT) # redirect the output to null
     #debug
-    subprocess.run(_arg, bufsize=1)
+    #subprocess.run(_arg, bufsize=1)
 
 # file uri builder
 def buildUri(_filename):
