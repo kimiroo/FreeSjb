@@ -39,3 +39,4 @@ However, with this tool, you can download and setup all the apps, tools required
 - VS Code js configurator
 - simple compiler launcher (due to inability to integrate shell in vscode)
 - python shell replacement for vscode
+- session selection (firefox only, coding, etc.)
