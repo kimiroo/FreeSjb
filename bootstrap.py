@@ -34,12 +34,16 @@ def download(_url, _filename):
 def run(_uri, _arg):
     _cmd = _arg.split(" ")
     _cmd.insert(0,_uri)
-    subprocess.run(_cmd, bufsize=1, 
-    stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT) # redirect the output to null 
+    #subprocess.run(_cmd, bufsize=1, 
+    #stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT) # redirect the output to null 
+    #debug
+    subprocess.run(_cmd, bufsize=1)
 def run2(_cmd):
     _arg = shlex.split(_cmd)
-    subprocess.run(_arg, bufsize=1, 
-    stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT) # redirect the output to null
+    #subprocess.run(_arg, bufsize=1, 
+    #stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT) # redirect the output to null
+    #debug
+    subprocess.run(_arg, bufsize=1)
 
 # file uri builder
 def buildUri(_filename):
@@ -105,6 +109,8 @@ def instFirefox():
             pass
         else:
             print("Firefox installation & configuration complete.")
+            print("Opening Google Drive...")
+            openweb("https://drive.google.com/drive/folders/1myzqcvLCAUQzhABE-bE8rDc_yYhcmTo_?usp=sharing")
             pass
 
 # cleanup
@@ -118,19 +124,18 @@ def cleanup():
 
 # init
 print('Welcome to Sajibang Configurator! (v.' + _appVer + ')\n\n')
-print('Initializing...', end=' ')
+print('======== Initialization ========')
+print('Initializing...')
 _cd = os.getcwd()
 _home = os.getenv('USERPROFILE')
 _dFiles = []
 createDir(os.path.join(_home,"Desktop","work"))
-print("Done.\n")
 
 # try importing wget
-print('Preparing required modules...')
+print('\nPreparing required modules...')
 print('Downloading wget...')
 getModule("wget")
 import wget
-print('Module preparation complete.\n')
 
 # try importing winshell -> winshell pip problem. not creating shortcuts due to this
 #getModule("pypiwin32")
@@ -140,23 +145,21 @@ print('Module preparation complete.\n')
 #import winshell
 
 # disable windows update
-print('Downloading Windows Update disable script...')
+print('\nDownloading Windows Update disable script...')
 download("https://raw.githubusercontent.com/kimiroo/sjb/main/script/dwu.ps1", "dsu.ps1")
-print('Disabling Windows update...', end=' ')
+print('Disabling Windows update...')
 run("sc.exe", "config wuauserv start=disabled")
 run("sc.exe", "stop wuauserv")
 run("powershell", "-noprofile -executionpolicy bypass -file " + os.path.join(_cd, "dsu.ps1"))
-print("Done.\n")
 
 # kill adobe AdobeARM.exe
-print('Killing Adobe services...')
+print('\nKilling Adobe services...')
+run('taskkill', '/f /im AdobeARM.exe /t')
 run("sc.exe", "config AdobeARMService start=disabled")
 run("sc.exe", "stop AdobeARMService")
-run('taskkill', '/f /im AdobeARM.exe /t')
-print('Done.\n')
 
 # download apps
-print('======== Downloading Apps ========')
+print('\n======== Downloading Apps ========')
 print("Downloading Firefox...")
 download("https://download.mozilla.org/?product=firefox-stub&os=win&lang=ko", "firefox.exe")
 download("https://raw.githubusercontent.com/kimiroo/sjb/main/data/prefs.js", "prefs.js") # download firefox pref
@@ -164,42 +167,37 @@ print("Installing Firefox now to save time...")
 thInstFf = threading.Thread(instFirefox())
 thInstFf.start()
 
-print("Downloading VS Code...")
+print("\nDownloading VS Code...")
 download("https://code.visualstudio.com/sha/download?build=stable&os=win32-x64", "vscode.exe")
 
-print("Downloading PuTTY...")
+print("\nDownloading PuTTY...")
 download("https://the.earth.li/~sgtatham/putty/latest/w64/putty.exe", "putty.exe")
 
-print("Downloading FileZilla...")
+print("\nDownloading FileZilla...")
 download("https://download.filezilla-project.org/client/FileZilla_3.56.2_win64.zip", "filezilla.zip")
 
-print("Downloading Git...")
+print("\nDownloading Git...")
 download('https://github.com/git-for-windows/git/releases/download/v2.33.1.windows.1/Git-2.33.1-64-bit.exe', 'git.exe')
 
-print("Downloading Bandizip...")
+print("\nDownloading Bandizip...")
 download('https://www.bandisoft.com/bandizip/dl.php?web', 'bandizip.exe')
 
 print('\n======== Installing Apps ========')
 
-print("Installing Bandizip...", end=' ')
+print("Installing Bandizip...")
 run(buildUri('bandizip.exe'), '/S')
-print('Done.')
 
-print("Installing Git...", end=' ')
+print("Installing Git...")
 run(buildUri('git.exe'), '/VERYSILENT /NORESTART')
-print('Done.')
 
-print("Installing VS Code...", end=' ')
+print("Installing VS Code...")
 run(buildUri('vscode.exe'), '/VERYSILENT /NORESTART /MERGETASKS=!runcode')
-print('Done.')
 
-print("Copying PuTTY...", end=' ')
+print("Copying PuTTY...")
 copyfile(buildUri2('putty.exe'), os.path.join(_home,"Desktop","work","putty.exe"))
-print('Done.')
 
-print("Extracting FileZilla...", end=' ')
+print("Extracting FileZilla...")
 unzip('filezilla.zip', os.path.join(_home,"Desktop","work"))
-print('Done.')
 
 # Code extension
 # GitHub Pull Requests and Issues - github.vscode-pull-request-github
@@ -207,21 +205,17 @@ print('Done.')
 # C/C++ - ms-vscode.cpptools
 
 # Configure apps
-print("Configuring Apps...", end=' ')
+print("\nConfiguring Apps...")
 run2('cmd /c "C:\Program Files\Microsoft VS Code\\bin\code.cmd" --install-extension ms-python.python')
 run2('cmd /c "C:\Program Files\Microsoft VS Code\\bin\code.cmd" --install-extension ms-vscode.cpptools')
 run('cmd', '/c reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v HideFileExt /t REG_DWORD /d 0 /f') # show file extensions
-print('Done.\n')
 
 # cleanup
-print('Cleaning up...', end=' ')
+print('\nCleaning up...')
 cleanup()
-print('Done.\n')
 
-print("==== Finished ====")
+print("\n======== Finished ========")
 
-print("\nOpening Google Drive...")
-openweb("https://drive.google.com/drive/folders/1myzqcvLCAUQzhABE-bE8rDc_yYhcmTo_?usp=sharing")
-
-input("\nPress Enter to exit...")
-exit()
+while True:
+    print('Entering cmd...')
+    run('cmd','')
