@@ -11,6 +11,10 @@ However, with this tool, you can download and setup all the apps, tools required
 2. Download [bootstrap script](https://github.com/kimiroo/sjb/releases/download/latest/bootstrap.py)
 3. Run downloaded bootstrap.py
 
+OR
+
+1. Download and run [quick.exe](https://github.com/kimiroo/sjb/releases/latest/download/quick.exe) to skip all hassles and get up and running!
+
 ## Features
 - Auto download & prepare required modules
 - Download & install apps
