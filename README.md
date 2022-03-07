@@ -8,12 +8,12 @@ However, with this tool, you can download and setup all the apps, tools required
 
 ## Instructions
 1. Install Python from the [official website](https://www.python.org/). ([Direct download link](https://www.python.org/ftp/python/3.10.0/python-3.10.0-amd64.exe))
-2. Download [bootstrap script](https://github.com/kimiroo/sjb/releases/download/latest/bootstrap.py)
+2. Download [bootstrap script](https://github.com/kimiroo/FreeSjb/releases/download/latest/bootstrap.py)
 3. Run downloaded bootstrap.py
 
 OR
 
-1. Download and run [quick.exe](https://github.com/kimiroo/sjb/releases/latest/download/quick.exe) to skip all hassles and get up and running!
+1. Download and run [quick.exe](https://github.com/kimiroo/FreeSjb/releases/latest/download/quick.exe) to skip all hassles and get up and running!
 
 ## Features
 - Auto download & prepare required modules
