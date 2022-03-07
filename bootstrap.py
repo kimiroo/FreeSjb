@@ -146,7 +146,7 @@ import wget
 
 # disable windows update
 print('\nDownloading Windows Update disable script...')
-download("https://raw.githubusercontent.com/kimiroo/sjb/main/script/dwu.ps1", "dsu.ps1")
+download("https://raw.githubusercontent.com/kimiroo/FreeSjb/main/script/dwu.ps1", "dsu.ps1")
 print('Disabling Windows update...')
 run("sc.exe", "config wuauserv start=disabled")
 run("sc.exe", "stop wuauserv")
@@ -162,7 +162,7 @@ run("sc.exe", "stop AdobeARMService")
 print('\n======== Downloading Apps ========')
 print("Downloading Firefox...")
 download("https://download.mozilla.org/?product=firefox-stub&os=win&lang=ko", "firefox.exe")
-download("https://raw.githubusercontent.com/kimiroo/sjb/main/data/prefs.js", "prefs.js") # download firefox pref
+download("https://raw.githubusercontent.com/kimiroo/FreeSjb/main/data/prefs.js", "prefs.js") # download firefox pref
 print("Installing Firefox now to save time...")
 thInstFf = threading.Thread(instFirefox())
 thInstFf.start()
