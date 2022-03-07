@@ -2,7 +2,7 @@
 import os, subprocess, shlex, zipfile, time, threading, wget
 
 # app meta data
-_appVer = '0.01 alpha'
+_appVer = 'v0.06 beta (quick)'
 
 def init():
     global _cd, _home, _dFiles, _tmp
@@ -129,7 +129,7 @@ def disableUpdate(loop=False):
 
     if os.path.isfile(os.path.join(_tmp, "dsu.ps1")) == False:
         print('Downloading script...')
-        download("https://raw.githubusercontent.com/kimiroo/sjb/main/script/dwu.ps1", os.path.join(_tmp, "dsu.ps1"))
+        download("https://raw.githubusercontent.com/kimiroo/FreeSjb/main/script/dwu.ps1", os.path.join(_tmp, "dsu.ps1"))
         _winScript = True
 
     if loop:
@@ -200,7 +200,7 @@ def main():
     run(os.path.join(_home, "pysh","pysh.exe"), launchParameter_PySh)
 
     print('\nConfiguring Applications...')
-    download('https://raw.githubusercontent.com/kimiroo/sjb/main/data/bandizip_conf.reg', os.path.join(_tmp, "bandizip_conf.reg"))
+    download('https://raw.githubusercontent.com/kimiroo/FreeSjb/main/data/bandizip_conf.reg', os.path.join(_tmp, "bandizip_conf.reg"))
     launchParameter_bdz = '/c reg import ' + os.path.join(_tmp, "bandizip_conf.reg")
     run(os.path.join(_home, "pysh","pysh.exe"), launchParameter_bdz)
 
