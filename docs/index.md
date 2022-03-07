@@ -1,5 +1,4 @@
-# Free SJB
-Configure Sajibang PC to a useable state instantly!
+## Configure Sajibang PC to a useable state instantly!
 
 Sajibang(싸지방, 사이버지식정보방) is a PC cafe in Korean army camp with a limited functionalities due to security reasons. 
 Officer encourages to learn with this PCs, but with limited functionalities it is pain in the butt to learn to code with these machines. 
