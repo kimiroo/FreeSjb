@@ -40,3 +40,8 @@ However, with this tool, you can download and setup all the apps, tools required
 - simple compiler launcher (due to inability to integrate shell in vscode)
 - python shell replacement for vscode
 - session selection (firefox only, coding, etc.)
+
+### Credits
+Executable icon is created with "IBM Plex Mono" font.\
+Copyright 2017 IBM Corp. All rights reserved.\
+Font License: SIL Open Font License, 1.1 (http://scripts.sil.org/OFL)
