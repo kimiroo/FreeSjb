@@ -12,7 +12,7 @@ from shutil import copyfile
 import threading
 
 # app meta data
-_appVer = '0.06 beta'
+_appVer = 'v0.06 beta'
 
 # development to do list:
 # - move google drive link to 'firefox setup' section to let user setup account while installing other apps
@@ -123,7 +123,7 @@ def cleanup():
             print('Error occured while deleting file \'' + i + '\'.')
 
 # init
-print('Welcome to Sajibang Configurator! (v.' + _appVer + ')\n\n')
+print('Welcome to Sajibang Configurator! (' + _appVer + ')\n\n')
 print('======== Initialization ========')
 print('Initializing...')
 _cd = os.getcwd()
