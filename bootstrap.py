@@ -12,7 +12,7 @@ from shutil import copyfile
 import threading
 
 # app meta data
-_appVer = '0.05 beta'
+_appVer = '0.06 beta'
 
 # development to do list:
 # - move google drive link to 'firefox setup' section to let user setup account while installing other apps
