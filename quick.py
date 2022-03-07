@@ -155,7 +155,7 @@ def updateDisabler():
 
 def main():
     # init
-    print('Welcome to Sajibang QUICK Configurator! (v.' + _appVer + ')\n\n')
+    print('Welcome to Sajibang QUICK Configurator! (' + _appVer + ')\n\n')
 
     print('Initializing...')
     init()
